@@ -12,9 +12,9 @@ You need to configure the php versions installed on the OS. Edit the `pvs` file 
 
     nano ./pvs
 
-Save file and copy `pvs` file to path `/usr/lib/bin` with these command:
+Save file and copy `pvs` file to path `/usr/bin` with these command:
 
-    sudo cp ./pvs /usr/lib/bin
+    sudo cp ./pvs /usr/bin
 Use and Enjoy!
 
     sudo psv
