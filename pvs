@@ -1,0 +1,91 @@
+#!/bin/bash
+
+argc=( "$@" )
+
+# Your php versions installed ...
+php_versions=(
+    "7.4"
+    "8.0"
+    "8.1"
+)
+
+if [[ " ${argc[*]} " =~ " --version " ]] || [[ " ${argc[*]} " =~ " -v " ]]; then
+    echo "PHP Switch Version (psv): v1.0.0"
+    exit 1
+    else
+        if [[ " ${argc[*]} " =~ " --help " ]] || [[ " ${argc[*]} " =~ " -h " ]]; then
+            echo -e "Usage: psv [...options]\n";
+            echo -e "options:\n";
+            echo -e "--help, -h\tShow app help"
+            echo -e "--version, -v\tShow app version"
+            exit 1
+        fi
+fi
+
+if ! [ $(id -u) = 0 ]; then
+    echo -e "\033[0;31mpermission denied: The script need to be run as root." >&2
+    exit 1
+fi
+
+function choose_from_menu() {
+    local prompt="$1" outvar="$2"
+    shift
+    shift
+    local options=("$@") cur=0 count=${#options[@]} index=0
+    local esc=$(echo -en "\e") # cache ESC as test doesn't allow esc codes
+    printf "$prompt\n"
+    while true
+    do
+        # list all options (option list is zero-based)
+        index=0 
+        for o in "${options[@]}"
+        do
+            if [ "$index" == "$cur" ]
+            then echo -e " > \e[7mphp$o\e[0m" # mark & highlight the current option
+            else echo "   php$o"
+            fi
+            index=$(( $index + 1 ))
+        done
+        read -s -n3 key # wait for user to key in arrows or ENTER
+        if [[ $key == $esc[A ]] # up arrow
+        then cur=$(( $cur - 1 ))
+            [ "$cur" -lt 0 ] && cur=0
+        elif [[ $key == $esc[B ]] # down arrow
+        then cur=$(( $cur + 1 ))
+            [ "$cur" -ge $count ] && cur=$(( $count - 1 ))
+        elif [[ $key == "" ]] # nothing, i.e the read delimiter - ENTER
+        then break
+        fi
+        echo -en "\e[${count}A" # go up to the beginning to re-render
+    done
+    # export the selection to the requested output variable
+    printf -v $outvar "${options[$cur]}"
+}
+
+choose_from_menu "Please select php version:" switch_to "${php_versions[@]}"
+echo -e "\n"
+
+# Change php cli veriosn
+echo -e "Changing php cli version ..."
+sudo update-alternatives --set php /usr/bin/php$switch_to > /dev/null
+sudo update-alternatives --set phar /usr/bin/phar$switch_to > /dev/null
+sudo update-alternatives --set phar.phar /usr/bin/phar.phar$switch_to > /dev/null
+
+# remove switch php version on list
+for i in ${!php_versions[@]};do
+    if [ "${php_versions[$i]}" == "$switch_to" ]; then
+        unset php_versions[$i]
+    fi 
+done
+
+for item in "${php_versions[@]}"
+do
+    sudo a2dismod php$item > /dev/null
+done
+
+echo -e "Changing apache php version ..."
+sudo a2enmod php$switch_to > /dev/null
+echo -e "Restarting apache ..."
+sudo systemctl restart apache2 > /dev/null
+
+echo -e "\n\033[0;32mSwitched to php$switch_to successfully!"
