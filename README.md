@@ -1,5 +1,5 @@
-## What PHP Version Switcher ( psv )
-PHP Version Switcher ( psv ) a shell script that allows you to switch between different versions of php. **This script is made for Linux**.
+## What PHP Version Switcher ( pvs )
+PHP Version Switcher ( pvs ) a shell script that allows you to switch between different versions of php. **This script is made for Linux**.
 
 ## Getting Started
 To use this script, follow these steps:
@@ -17,5 +17,5 @@ Save file and copy `pvs` file to path `/usr/bin` with these command:
     sudo cp ./pvs /usr/bin
 Use and Enjoy!
 
-    sudo psv
+    sudo pvs
 

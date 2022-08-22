@@ -10,11 +10,11 @@ php_versions=(
 )
 
 if [[ " ${argc[*]} " =~ " --version " ]] || [[ " ${argc[*]} " =~ " -v " ]]; then
-    echo "PHP Switch Version (psv): v1.0.0"
+    echo "PHP Switch Version (pvs): v1.0.0"
     exit 1
     else
         if [[ " ${argc[*]} " =~ " --help " ]] || [[ " ${argc[*]} " =~ " -h " ]]; then
-            echo -e "Usage: psv [...options]\n";
+            echo -e "Usage: pvs [...options]\n";
             echo -e "options:\n";
             echo -e "--help, -h\tShow app help"
             echo -e "--version, -v\tShow app version"
