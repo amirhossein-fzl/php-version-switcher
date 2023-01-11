@@ -1,5 +1,5 @@
 ## What PHP Version Switcher ( pvs )
-PHP Version Switcher ( pvs ) a shell script that allows you to switch between different versions of php. **This script is made for Linux**.
+PHP Version Switcher ( pvs ) a shell script that allows you to switch between different versions of php. **This script is made for Debian and Debian-based distro's**.
 
 ## Getting Started
 To use this script, follow these steps:
